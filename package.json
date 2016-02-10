@@ -2,6 +2,8 @@
   "name": "language-perl-html-template",
   "version": "1.0.0",
   "description": "Perl Html Template language grammar",
+  "repository": "https://github.com/viatsko/language-perl-html-template.git",
+  "author": "Valerii Iatsko <dwr@codingbox.io>",
   "license": "MIT",
   "engines": {
     "atom": ">0.50.0"
