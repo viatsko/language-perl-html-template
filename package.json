@@ -1,0 +1,20 @@
+{
+  "name": "language-perl-html-template",
+  "version": "1.0.0",
+  "description": "Perl Html Template language grammar",
+  "license": "MIT",
+  "engines": {
+    "atom": ">0.50.0"
+  },
+  "dependencies": {},
+  "_atomModuleCache": {
+    "version": 1,
+    "dependencies": [],
+    "extensions": {
+      ".json": [
+        "package.json"
+      ]
+    },
+    "folders": []
+  }
+}

@@ -1,0 +1,131 @@
+fileTypes: [
+  "tmpl"
+  "inc"
+]
+foldingStartMarker: "<(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|li|form|dl)\\b.*?>|<!--(?!.*--\\s*>)|^<!--\\ \\#tminclude\\ (?>.*?-->)$|<\\?(?:php)?.*\\b(if|for(each)?|while)\\b.+:|\\{\\{?(if|foreach|capture|literal|foreach|php|section|strip)|\\{\\s*($|\\?>\\s*$|//|/\\*(.*\\*/\\s*$|(?!.*?\\*/))))"
+foldingStopMarker: "(</(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|li|form|dl)>|^(?!.*?<!--).*?--\\s*>|^<!--\\ end\\ tminclude\\ -->$|<\\?(?:php)?.*\\bend(if|for(each)?|while)\\b|\\{\\{?/(if|foreach|capture|literal|foreach|php|section|strip)|^[^{]*\\})"
+name: "HTML Templates"
+patterns: [
+  {
+    'begin': '(<)(TMPL_COMMENT)(>)'
+    'beginCaptures':
+      '0':
+        'name': 'punctuation.definition.comment.begin.tmpl'
+    'end': '(</)(TMPL_COMMENT)(>)'
+    'endCaptures':
+      '0':
+        'name': 'punctuation.definition.comment.end.tmpl'
+    'name': 'comment.block.tmpl'
+  }
+  {
+    include: "#tmpl-tags"
+  }
+  {
+    include: "text.html.basic"
+  }
+]
+repository:
+  "expression-pearl-method":
+    match: "\\b[a-zA-Z0-9-_]+(?=\\(.*\\))"
+    name: "entity.name.function.perl.expression.tmpl"
+  number:
+    match: "\\s+\\d"
+    name: "constant.numeric"
+  "string-double-quoted":
+    begin: "\""
+    beginCaptures:
+      "0":
+        name: "punctuation.definition.string.begin.tmpl"
+    end: "\""
+    endCaptures:
+      "0":
+        name: "punctuation.definition.string.end.tmpl"
+    name: "string.quoted.double.html"
+  "string-single-quoted":
+    begin: "'"
+    beginCaptures:
+      "0":
+        name: "punctuation.definition.string.begin.tmpl"
+    end: "'"
+    endCaptures:
+      "0":
+        name: "punctuation.definition.string.end.tmpl"
+    name: "string.quoted.single.html"
+  "tag-perl-attribute":
+    match: "\\b([a-zA-Z:-]{1,})(?==)"
+    name: "entity.other.attribute-name.html"
+  "tag-perl-expression":
+    begin: "\\[%"
+    beginCaptures:
+      "0":
+        name: "keyword.perl.expression.start.tmpl"
+    end: "%\\]"
+    endCaptures:
+      "0":
+        name: "keyword.perl.expression.end.tmpl"
+    patterns: [
+      {
+        include: "#tag-perl-keyword"
+      }
+      {
+        include: "#expression-pearl-method"
+      }
+      {
+        include: "#string-double-quoted"
+      }
+      {
+        include: "#string-single-quoted"
+      }
+      {
+        include: "#numbers"
+      }
+    ]
+  "tag-perl-keyword":
+    match: "(\\s+(eq|ne|or|and|not)|=~|&&|==|\\|\\||!~|<=?|[^-]>=?)"
+    name: "keyword.perl.expression.tmpl"
+  "tag-perl-options":
+    match: "\\b([A-Z_]{1,})"
+    name: "entity.other.attribute-name.html"
+  "tmpl-tag-stuff":
+    patterns: [
+      {
+        include: "#tag-perl-attribute"
+      }
+      {
+        include: "#string-single-quoted"
+      }
+      {
+        include: "#string-double-quoted"
+      }
+      {
+        include: "#tag-perl-options"
+      }
+      {
+        include: "#tag-perl-expression"
+      }
+    ]
+  "tmpl-tags":
+    begin: "(<[/~]?)(TMPL_(?i:[a-zA-Z]+)\\b)"
+    beginCaptures:
+      "1":
+        name: "entity.name.tag.begin.tmpl"
+      "2":
+        name: "support.type.tmpl"
+    end: "([~]?>)"
+    endCaptures:
+      "1":
+        name: "entity.name.tag.end.tmpl"
+    name: "meta.tag.block.any.tmpl"
+    patterns: [
+      {
+        include: "#tmpl-tag-stuff"
+      }
+    ]
+  'numbers':
+    'patterns': [
+      {
+        'match': '\\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\\.?[0-9]*)|(\\.[0-9]+))((e|E)(\\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b'
+        'name': 'constant.numeric.tmpl'
+      }
+    ]
+scopeName: "text.tmpl"

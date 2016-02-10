@@ -1,0 +1,4 @@
+".text.tmpl":
+  editor:
+    commentStart: "<TMPL_COMMENT>"
+    commentEnd: "</TMPL_COMMENT>"
