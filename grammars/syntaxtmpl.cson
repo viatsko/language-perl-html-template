@@ -7,6 +7,9 @@ foldingStopMarker: "(</(?i:head|body|table|thead|tbody|tfoot|tr|div|select|field
 name: "HTML Templates"
 patterns: [
   {
+    'include': '#line_comment'
+  }
+  {
     'begin': '(<)(TMPL_COMMENT)(>)'
     'beginCaptures':
       '0':
@@ -28,6 +31,26 @@ repository:
   "expression-pearl-method":
     match: "\\b[a-zA-Z0-9-_]+(?=\\(.*\\))"
     name: "entity.name.function.perl.expression.tmpl"
+  'line_comment':
+    'patterns': [
+      {
+        'begin': '(^[ \\t]+)?(?=#)'
+        'beginCaptures':
+          '1':
+            'name': 'punctuation.whitespace.comment.leading.perl'
+        'end': '(?!\\G)'
+        'patterns': [
+          {
+            'begin': '#'
+            'beginCaptures':
+              '0':
+                'name': 'punctuation.definition.comment.perl'
+            'end': '\\n'
+            'name': 'comment.line.number-sign.perl'
+          }
+        ]
+      }
+    ]
   number:
     match: "\\s+\\d"
     name: "constant.numeric"
