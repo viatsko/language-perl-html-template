@@ -99,6 +99,9 @@ repository:
         include: "#perl-variable"
       }
       {
+        include: "#perl-bareword"
+      }
+      {
         include: "#perl-keyword"
       }
       {
@@ -114,8 +117,11 @@ repository:
         include: "#numbers"
       }
     ]
+  "perl-bareword":
+    match: '(?<={)\\s*\\w+\\s*(?=})'
+    name: 'constant.other.bareword.perl'
   "perl-keyword":
-    match: "(\\s+(eq|ne|or|and|not)|=~|&&|==|\\|\\||!~|<=?|[^-]>=?)"
+    match: "(\\s+(eq|ne|or|and|not)|->|=~|&&|==|\\|\\||!~|<=?|[^-]>=?)"
     name: "keyword.operator.tmpl"
   "tag-perl-options":
     match: "\\b([A-Z_]{1,})"
