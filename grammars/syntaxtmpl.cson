@@ -4,21 +4,29 @@ fileTypes: [
 ]
 foldingStartMarker: "<(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|li|form|dl)\\b.*?>|<!--(?!.*--\\s*>)|^<!--\\ \\#tminclude\\ (?>.*?-->)$|<\\?(?:php)?.*\\b(if|for(each)?|while)\\b.+:|\\{\\{?(if|foreach|capture|literal|foreach|php|section|strip)|\\{\\s*($|\\?>\\s*$|//|/\\*(.*\\*/\\s*$|(?!.*?\\*/))))"
 foldingStopMarker: "(</(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|li|form|dl)>|^(?!.*?<!--).*?--\\s*>|^<!--\\ end\\ tminclude\\ -->$|<\\?(?:php)?.*\\bend(if|for(each)?|while)\\b|\\{\\{?/(if|foreach|capture|literal|foreach|php|section|strip)|^[^{]*\\})"
-name: "HTML Templates"
+name: "HTMLTemplate (for ST2)"
 patterns: [
   {
-    'include': '#line_comment'
-  }
-  {
-    'begin': '(<)(TMPL_COMMENT)(>)'
-    'beginCaptures':
-      '0':
-        'name': 'punctuation.definition.comment.begin.tmpl'
-    'end': '(</)(TMPL_COMMENT)(>)'
-    'endCaptures':
-      '0':
-        'name': 'punctuation.definition.comment.end.tmpl'
-    'name': 'comment.block.tmpl'
+    begin: "(<)(TMPL_COMMENT)(>)"
+    captures:
+      "1":
+        name: "punctuation.definition.tag.end.tmpl"
+      "2":
+        name: "support.type.tmpl"
+      "3":
+        name: "punctuation.definition.tag.begin.tmpl"
+    end: "(</)(TMPL_COMMENT)(>)"
+    name: "meta.tag.block.any.tmpl"
+    patterns: [
+      {
+        match: "<TMPL_.*?>"
+        name: "invalid.illegal.bad-comments-or-CDATA.html"
+      }
+      {
+        match: ".*?"
+        name: "comment.block.html"
+      }
+    ]
   }
   {
     include: "#tmpl-tags"
@@ -29,28 +37,8 @@ patterns: [
 ]
 repository:
   "expression-pearl-method":
-    match: "\\b[a-zA-Z0-9-_]+(?=\\(.*\\))"
+    match: "\\b[a-zA-Z0-0-_]+(?=\\(.*\\))"
     name: "entity.name.function.perl.expression.tmpl"
-  'line_comment':
-    'patterns': [
-      {
-        'begin': '(^[ \\t]+)?(?=#)'
-        'beginCaptures':
-          '1':
-            'name': 'punctuation.whitespace.comment.leading.perl'
-        'end': '(?!\\G)'
-        'patterns': [
-          {
-            'begin': '#'
-            'beginCaptures':
-              '0':
-                'name': 'punctuation.definition.comment.perl'
-            'end': '\\n'
-            'name': 'comment.line.number-sign.perl'
-          }
-        ]
-      }
-    ]
   number:
     match: "\\s+\\d"
     name: "constant.numeric"
@@ -100,11 +88,11 @@ repository:
         include: "#string-single-quoted"
       }
       {
-        include: "#numbers"
+        include: "#number"
       }
     ]
   "tag-perl-keyword":
-    match: "(\\s+(eq|ne|or|and|not)|=~|&&|==|\\|\\||!~|<=?|[^-]>=?)"
+    match: "(\\s+(eq|ne|or|and|not)|>=|<=|=~|&&|==|\\|\\||!~|<|[^-]>)"
     name: "keyword.perl.expression.tmpl"
   "tag-perl-options":
     match: "\\b([A-Z_]{1,})"
@@ -142,13 +130,6 @@ repository:
     patterns: [
       {
         include: "#tmpl-tag-stuff"
-      }
-    ]
-  'numbers':
-    'patterns': [
-      {
-        'match': '\\b((0(x|X)[0-9a-fA-F]*)|(([0-9]+\\.?[0-9]*)|(\\.[0-9]+))((e|E)(\\+|-)?[0-9]+)?)(L|l|UL|ul|u|U|F|f|ll|LL|ull|ULL)?\\b'
-        'name': 'constant.numeric.tmpl'
       }
     ]
 scopeName: "text.tmpl"
