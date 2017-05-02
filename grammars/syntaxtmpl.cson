@@ -2,33 +2,35 @@ fileTypes: [
   "tmpl"
   "inc"
 ]
-foldingStartMarker: "<(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|li|form|dl)\\b.*?>|<!--(?!.*--\\s*>)|^<!--\\ \\#tminclude\\ (?>.*?-->)$|<\\?(?:php)?.*\\b(if|for(each)?|while)\\b.+:|\\{\\{?(if|foreach|capture|literal|foreach|php|section|strip)|\\{\\s*($|\\?>\\s*$|//|/\\*(.*\\*/\\s*$|(?!.*?\\*/))))"
-foldingStopMarker: "(</(?i:head|body|table|thead|tbody|tfoot|tr|div|select|fieldset|style|script|ul|ol|li|form|dl)>|^(?!.*?<!--).*?--\\s*>|^<!--\\ end\\ tminclude\\ -->$|<\\?(?:php)?.*\\bend(if|for(each)?|while)\\b|\\{\\{?/(if|foreach|capture|literal|foreach|php|section|strip)|^[^{]*\\})"
 name: "HTML Templates"
+injections:
+  'L:text.html.tmpl - (meta.tag.block.any.tmpl | comment.block.tmpl)':
+    patterns: [
+      {
+        begin: '(<)(TMPL_COMMENT)(>)'
+        beginCaptures:
+          0:
+            name: 'punctuation.definition.comment.begin.tmpl'
+        end: '(</)(TMPL_COMMENT)(>)'
+        endCaptures:
+          0:
+            name: 'punctuation.definition.comment.end.tmpl'
+        name: 'comment.block.tmpl'
+      }
+      {
+        include: "#tmpl-tags"
+      }
+    ]
 patterns: [
   {
-    'include': '#line_comment'
-  }
-  {
-    'begin': '(<)(TMPL_COMMENT)(>)'
-    'beginCaptures':
-      '0':
-        'name': 'punctuation.definition.comment.begin.tmpl'
-    'end': '(</)(TMPL_COMMENT)(>)'
-    'endCaptures':
-      '0':
-        'name': 'punctuation.definition.comment.end.tmpl'
-    'name': 'comment.block.tmpl'
-  }
-  {
-    include: "#tmpl-tags"
+    include: '#line_comment'
   }
   {
     include: "text.html.basic"
   }
 ]
 repository:
-  "expression-pearl-method":
+  "expression-perl-method":
     match: "\\b[a-zA-Z0-9-_]+(?=\\(.*\\))"
     name: "entity.name.function.perl.expression.tmpl"
   'line_comment':
@@ -41,16 +43,25 @@ repository:
         'end': '(?!\\G)'
         'patterns': [
           {
-            'begin': '#'
+            'begin': '^#'
             'beginCaptures':
               '0':
                 'name': 'punctuation.definition.comment.perl'
             'end': '\\n'
-            'name': 'comment.line.number-sign.perl'
+            'name': 'comment.line.single-hash.tmpl'
+          }
+          {
+            'begin': '##'
+            'beginCaptures':
+              '0':
+                'name': 'punctuation.definition.comment.perl'
+            'end': '\\n'
+            'name': 'comment.line.double-hash.tmpl'
           }
         ]
       }
     ]
+    name: 'comment.line.tmpl'
   number:
     match: "\\s+\\d"
     name: "constant.numeric"
@@ -74,9 +85,6 @@ repository:
       "0":
         name: "punctuation.definition.string.end.tmpl"
     name: "string.quoted.single.html"
-  "tag-perl-attribute":
-    match: "\\b([a-zA-Z:-]{1,})(?==)"
-    name: "entity.other.attribute-name.html"
   "tag-perl-expression":
     begin: "\\[%"
     beginCaptures:
@@ -88,10 +96,13 @@ repository:
         name: "keyword.perl.expression.end.tmpl"
     patterns: [
       {
-        include: "#tag-perl-keyword"
+        include: "#perl-variable"
       }
       {
-        include: "#expression-pearl-method"
+        include: "#perl-keyword"
+      }
+      {
+        include: "#expression-perl-method"
       }
       {
         include: "#string-double-quoted"
@@ -103,9 +114,9 @@ repository:
         include: "#numbers"
       }
     ]
-  "tag-perl-keyword":
+  "perl-keyword":
     match: "(\\s+(eq|ne|or|and|not)|=~|&&|==|\\|\\||!~|<=?|[^-]>=?)"
-    name: "keyword.perl.expression.tmpl"
+    name: "keyword.operator.tmpl"
   "tag-perl-options":
     match: "\\b([A-Z_]{1,})"
     name: "entity.other.attribute-name.html"
@@ -151,4 +162,86 @@ repository:
         'name': 'constant.numeric.tmpl'
       }
     ]
-scopeName: "text.tmpl"
+  'perl-variable':
+    'patterns': [
+      {
+        'captures':
+          '1':
+            'name': 'punctuation.definition.variable.perl'
+        'match': '(\\$)&(?![A-Za-z0-9_])'
+        'name': 'variable.other.regexp.match.perl'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'punctuation.definition.variable.perl'
+        'match': '(\\$)`(?![A-Za-z0-9_])'
+        'name': 'variable.other.regexp.pre-match.perl'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'punctuation.definition.variable.perl'
+        'match': '(\\$)\'(?![A-Za-z0-9_])'
+        'name': 'variable.other.regexp.post-match.perl'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'punctuation.definition.variable.perl'
+        'match': '(\\$)\\+(?![A-Za-z0-9_])'
+        'name': 'variable.other.regexp.last-paren-match.perl'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'punctuation.definition.variable.perl'
+        'match': '(\\$)"(?![A-Za-z0-9_])'
+        'name': 'variable.other.readwrite.list-separator.perl'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'punctuation.definition.variable.perl'
+        'match': '(\\$)0(?![A-Za-z0-9_])'
+        'name': 'variable.other.predefined.program-name.perl'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'punctuation.definition.variable.perl'
+        'match': '(\\$)[_ab\\*\\.\\/\\|,\\\\;#%=\\-~^:?!\\$<>\\(\\)\\[\\]@](?![A-Za-z0-9_])'
+        'name': 'variable.other.predefined.perl'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'punctuation.definition.variable.perl'
+        'match': '(\\$)[0-9]+(?![A-Za-z0-9_])'
+        'name': 'variable.other.subpattern.perl'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'punctuation.definition.variable.perl'
+        'match': '([\\$\\@\\%](#)?)([a-zA-Zx7f-xff\\$]|::)([a-zA-Z0-9_x7f-xff\\$]|::)*\\b'
+        'name': 'variable.other.readwrite.global.perl'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'punctuation.definition.variable.perl'
+          '2':
+            'name': 'punctuation.definition.variable.perl'
+        'match': '(\\$\\{)(?:[a-zA-Zx7f-xff\\$]|::)(?:[a-zA-Z0-9_x7f-xff\\$]|::)*(\\})'
+        'name': 'variable.other.readwrite.global.perl'
+      }
+      {
+        'captures':
+          '1':
+            'name': 'punctuation.definition.variable.perl'
+        'match': '([\\$\\@\\%](#)?)[0-9_]\\b'
+        'name': 'variable.other.readwrite.global.special.perl'
+      }
+    ]
+scopeName: "text.html.tmpl"
