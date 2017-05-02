@@ -1,6 +1,6 @@
 {
   "name": "language-perl-html-template",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Perl Html Template language grammar",
   "repository": "https://github.com/viatsko/language-perl-html-template.git",
   "author": "Valerii Iatsko <dwr@codingbox.io>",
