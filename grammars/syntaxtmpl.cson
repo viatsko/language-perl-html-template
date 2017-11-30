@@ -145,7 +145,7 @@ repository:
       }
     ]
   "tmpl-tags":
-    begin: "(<[/~]?)(TMPL_(?i:[a-zA-Z]+)\\b)"
+    begin: "(<[/~]?)(TMPL_(?i:[a-zA-Z_]+)\\b)"
     beginCaptures:
       "1":
         name: "entity.name.tag.begin.tmpl"
